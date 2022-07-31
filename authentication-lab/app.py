@@ -13,8 +13,8 @@ firebaseConfig = {
   "databaseURL":""
 }
 
-firebase = pyrebase.initialize_app(firebadeConfig)
-auth = firebase.auth
+firebase = pyrebase.initialize_app(firebaseConfig)
+auth = firebase.auth()
 
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -33,13 +33,16 @@ def signin():
 			return redirect(url_for('add_tweet'))
 		except:
 			error = "Authentication failed"
-	return render_template("signin.html")
+			return error
+	else:
+		return render_template("signin.html")
 
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-	if request.methods == 'POST':
+	if request.method == 'POST':
+
 		email = request.form['email']
 		password = request.form['password']
 		try:
@@ -47,7 +50,9 @@ def signup():
 			return redirect(url_for('add_tweet'))
 		except:
 		   error = "Authentication failed"
-   			return render_template("signup.html")
+		   return (error)
+	else:
+		return render_template("signup.html")
 
 
 @app.route('/add_tweet', methods=['GET', 'POST'])
