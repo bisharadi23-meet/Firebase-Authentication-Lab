@@ -10,11 +10,12 @@ firebaseConfig = {
   "messagingSenderId": "461385299351",
   "appId": "1:461385299351:web:913cea040ee6b63ab2c0d2",
   "measurementId": "G-LQWGWSBHPY",
-  "databaseURL":""
+  "databaseURL":"https://firstbase-ea13c-default-rtdb.europe-west1.firebasedatabase.app/"
 }
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
+db = firebase.database()
 
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -42,12 +43,12 @@ def signin():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	if request.method == 'POST':
-
-		email = request.form['email']
-		password = request.form['password']
 		try:
-			login_session['user'] =auth.create_user_with_email_and_password(email, password)
-			return redirect(url_for('add_tweet'))
+			login_session['user'] = auth.create_user_with_email_and_password(email, password)
+			user = {"email":request.form("email") , "password":request.form("password") ,"full_name":request.form("full_name") ,"username":request.form("username") ,"bio":request.form("bio")}
+			db.child("Users").child(login_session['user']['localId']).set(user)
+			email = request.form['email']
+			password = request.form['password']
 		except:
 		   error = "Authentication failed"
 		   return (error)
