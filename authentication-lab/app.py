@@ -10,7 +10,7 @@ firebaseConfig = {
   "messagingSenderId": "461385299351",
   "appId": "1:461385299351:web:913cea040ee6b63ab2c0d2",
   "measurementId": "G-LQWGWSBHPY",
-  "databaseURL":"https://firstbase-ea13c-default-rtdb.europe-west1.firebasedatabase.app/"
+  "databaseURL":"https://firstbase-ea13c-default-rtdb.europe-west1.firebasedatabase.app"
 }
 
 firebase = pyrebase.initialize_app(firebaseConfig)
@@ -38,20 +38,19 @@ def signin():
 	else:
 		return render_template("signin.html")
 
-
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	if request.method == 'POST':
-		try:
-			login_session['user'] = auth.create_user_with_email_and_password(email, password)
-			user = {"email":request.form("email") , "password":request.form("password") ,"full_name":request.form("full_name") ,"username":request.form("username") ,"bio":request.form("bio")}
-			db.child("Users").child(login_session['user']['localId']).set(user)
-			email = request.form['email']
-			password = request.form['password']
-		except:
-		   error = "Authentication failed"
-		   return (error)
+		# try:
+		email = request.form['email']
+		password = request.form['password']
+		login_session['user'] = auth.create_user_with_email_and_password(email, password)
+		user = {"email":request.form["email"], "password":request.form["password"] ,"full_name":request.form["full_name"] ,"username":request.form["username"] ,"bio":request.form["bio"]}
+		db.child("Users").child(login_session['user']['localId']).set(user)
+		return redirect(url_for('add_tweet'))
+		# except:
+		#    error = "Authentication failed"
+		   # return (error)
 	else:
 		return render_template("signup.html")
 
